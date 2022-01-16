@@ -18,4 +18,3 @@ C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\obj\Debug\ProtoSRV.exe.config
 C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\obj\Debug\ProtoSRV.Form2.resources
 C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\bin\Debug\SmoothProgressBar.dll
 C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\bin\Debug\SmoothProgressBar.pdb
-C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\obj\Debug\ProtoSRV.csproj.CopyComplete

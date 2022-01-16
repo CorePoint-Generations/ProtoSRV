@@ -294,6 +294,8 @@ namespace ProtoSRV
                     listBox1.Items.Add("[Message from " + pcName + " at " + now + "]: " + message);
                     textBox3.Text = "# ";
                     textBox3.Select(textBox3.Text.Length, 0);
+                    listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                    listBox1.SelectedIndex = -1;
                     return;
                 }
                 else if (cmd.StartsWith("# client "))
@@ -312,18 +314,26 @@ namespace ProtoSRV
                             output.ShowDialog();
                             textBox3.Text = "# ";
                             textBox3.Select(textBox3.Text.Length, 0);
+                            listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                            listBox1.SelectedIndex = -1;
                             return;
                         }
                     }
+                    listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                    listBox1.SelectedIndex = -1;
                     return;
                 }
                 else if (cmd == "# exit")
                 {
                     RunScript("taskkill /f /im ProtoSRV.exe");
+                    listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                    listBox1.SelectedIndex = -1;
                 }
                 else if (cmd == "# cls" || cmd == "# clear")
                 {
                     listBox1.Items.Clear();
+                    listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                    listBox1.SelectedIndex = -1;
                 }
                 else if (cmd.StartsWith("# process "))
                 {
@@ -343,6 +353,8 @@ namespace ProtoSRV
                     }
 
                     textBox3.Text = "";
+                    listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                    listBox1.SelectedIndex = -1;
                     return;
                 }
                 else if (textBox3.Text == "# ")
@@ -350,6 +362,8 @@ namespace ProtoSRV
                     DateTime now = DateTime.Now;
                     listBox1.Items.Add("[" + now + " ERROR]: " + "Command: \"# \"");
                     listBox1.Items.Add("                                                                        ^^^^ command cannot be executed as empty text");
+                    listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                    listBox1.SelectedIndex = -1;
                     return;
                 }
                 else
@@ -357,6 +371,8 @@ namespace ProtoSRV
                     DateTime now = DateTime.Now;
                     listBox1.Items.Add("[" + now + " ERROR]: " + "Command: \"" + cmd + "\" cannot be executed: command does not exist");
                     textBox3.Text = "# ";
+                    listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                    listBox1.SelectedIndex = -1;
                     return;
                 }
                 listBox1.SelectedIndex = listBox1.Items.Count - 1;
