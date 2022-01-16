@@ -14,3 +14,5 @@ C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\obj\Debug\ProtoSRV.csproj.Assemb
 C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\bin\Debug\System.CodeDom.dll
 C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\bin\Debug\System.CodeDom.xml
 C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\obj\Debug\ProtoSRV.ProtoSRV.resources
+C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\obj\Debug\ProtoSRV.exe.config
+C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\obj\Debug\ProtoSRV.Form2.resources

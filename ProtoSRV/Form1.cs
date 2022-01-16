@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using System.Management.Automation;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,13 +16,14 @@ using System.Data.Sql;
 using System.Diagnostics;
 using System.Management;
 using System.Threading;
+using System.Management.Automation.Runspaces;
 
 namespace ProtoSRV
 {
 
     public partial class ProtoSRV : Form
     {
-        delegate void MyDelegate(string txt);
+        public string cmdOutput;
 
         public ProtoSRV()
         {
@@ -191,6 +194,21 @@ namespace ProtoSRV
             }
         }
 
+        private string RunScript(string script)
+        {
+            Runspace runspace = RunspaceFactory.CreateRunspace();
+            runspace.Open();
+            Pipeline pip = runspace.CreatePipeline();
+            pip.Commands.AddScript(script);
+            pip.Commands.Add("Out-String");
+            Collection<PSObject> results = pip.Invoke();
+            runspace.Close();
+            StringBuilder strB = new StringBuilder();
+            foreach (PSObject pSObject in results)
+                strB.AppendLine(pSObject.ToString());
+            return strB.ToString();
+        }
+
         private void listBox1_KeyPress(object sender, KeyPressEventArgs e)
         {
             
@@ -210,18 +228,33 @@ namespace ProtoSRV
                 {
                     string message = textBox3.Text.Replace("# msg ", "");
                     string pcName = System.Environment.MachineName;
-                    listBox1.Items.Add("[Message from " + pcName + "]: " + message);
+                    DateTime now = DateTime.Now;
+                    listBox1.Items.Add("[Message from " + pcName + " at " + now + "]: " + message);
                     textBox3.Text = "# ";
                     textBox3.Select(textBox3.Text.Length, 0);
                     return;
                 }
-                if (!(textBox3.Text == "# "))
+                if (textBox3.Text.StartsWith("# client "))
                 {
-                    DateTime now = DateTime.Now;
-                    listBox1.Items.Add("[" + now + "]: " + textBox3.Text);
-                    textBox3.Text = "# ";
-                    textBox3.Select(textBox3.Text.Length, 0);
+                    string cmd2 = cmd.Replace("# client ", "");
+                    if (cmd2.StartsWith("-run "))
+                    {
+                        string cmd3 = cmd2.Replace("-run ", "");
+                        if (cmd3.StartsWith("\\powershell.exe "))
+                        {
+                            string cmd4 = cmd3.Replace("\\powershell.exe ", "");
+                            string Output = RunScript(cmd4);
+                            DateTime now = DateTime.Now;
+                            listBox1.Items.Add("[" + now + " INFO]: Executed \"" + cmd4 + "\" in powershell.exe");
+                            Form2 output = new Form2(Output);
+                            output.ShowDialog();
+                            textBox3.Text = "# ";
+                            textBox3.Select(textBox3.Text.Length, 0);
+                        }
+                    }
                 }
+                
+
                 else if (textBox3.Text == "# ")
                 {
                     DateTime now = DateTime.Now;
@@ -231,22 +264,7 @@ namespace ProtoSRV
                 listBox1.SelectedIndex = listBox1.Items.Count - 1;
                 listBox1.SelectedIndex = -1;
                 listBox2.Items.Add(cmd);
-            }
-            else if (e.KeyCode == Keys.Up)
-            {
-                if (listBox2.SelectedIndex != 0)
-                {
-                    listBox2.SelectedIndex = listBox2.Items.Count - 1;
-                    textBox3.Text = listBox2.SelectedItem.ToString();
-                }
-            }
-            else if (e.KeyCode == Keys.Down)
-            {
-                if (listBox2.SelectedIndex != listBox2.Items.Count - 1)
-                {
-                    listBox2.SelectedIndex = listBox2.Items.Count + 1;
-                    textBox3.Text = listBox2.SelectedItem.ToString();
-                }
+                textBox3.Text = "# ";
             }
         }
 
