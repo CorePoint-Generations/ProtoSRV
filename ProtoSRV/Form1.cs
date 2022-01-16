@@ -103,6 +103,11 @@ namespace ProtoSRV
             button3.Visible = false;
             button4.Visible = false;
             button5.Visible = false;
+            button1.Enabled = false;
+            button1.Text = "Connecting to CLI...";
+            checkBox1.Enabled = false;
+            textBox1.Enabled = false;
+            textBox2.Enabled = false;
 
             if (checkBox1.Checked)
             {
@@ -170,6 +175,11 @@ namespace ProtoSRV
                     button3.Visible = true;
                     button4.Visible = true;
                     button5.Visible = true;
+                    button1.Enabled = true;
+                    button1.Text = "Connect to CLI";
+                    checkBox1.Enabled = true;
+                    textBox1.Enabled = true;
+                    textBox2.Enabled = true;
                 }
             }
             
@@ -207,6 +217,7 @@ namespace ProtoSRV
             foreach (PSObject pSObject in results)
                 strB.AppendLine(pSObject.ToString());
             return strB.ToString();
+            
         }
 
         private void listBox1_KeyPress(object sender, KeyPressEventArgs e)
@@ -234,7 +245,7 @@ namespace ProtoSRV
                     textBox3.Select(textBox3.Text.Length, 0);
                     return;
                 }
-                if (textBox3.Text.StartsWith("# client "))
+                else if (textBox3.Text.StartsWith("# client "))
                 {
                     string cmd2 = cmd.Replace("# client ", "");
                     if (cmd2.StartsWith("-run "))
@@ -250,16 +261,52 @@ namespace ProtoSRV
                             output.ShowDialog();
                             textBox3.Text = "# ";
                             textBox3.Select(textBox3.Text.Length, 0);
+                            return;
                         }
                     }
+                    return;
                 }
-                
+                else if (cmd == "# exit")
+                {
+                    RunScript("taskkill /f /im ProtoSRV.exe");
+                }
+                else if (cmd == "# cls" || cmd == "# clear")
+                {
+                    listBox1.Items.Clear();
+                }
+                else if (cmd.StartsWith("# process "))
+                {
+                    string cmd2 = cmd.Replace("# process ", "");
+                    if (cmd2.StartsWith("-start "))
+                    {
+                        string cmd3 = cmd2.Replace("-start ", "");
+                        try
+                        {
+                            Process.Start(cmd3);
+                        }
+                        catch(Exception exc)
+                        {
+                            MessageBox.Show(exc.ToString(), "Error Starting Process");
+                        }
+                        return;
+                    }
 
+                    textBox3.Text = "";
+                    return;
+                }
                 else if (textBox3.Text == "# ")
                 {
                     DateTime now = DateTime.Now;
                     listBox1.Items.Add("[" + now + " ERROR]: " + "Command: \"# \"");
                     listBox1.Items.Add("                                                                        ^^^^ command cannot be executed as empty text");
+                    return;
+                }
+                else
+                {
+                    DateTime now = DateTime.Now;
+                    listBox1.Items.Add("[" + now + " ERROR]: " + "Command: \"" + cmd + "\" cannot be executed: command does not exist");
+                    textBox3.Text = "# ";
+                    return;
                 }
                 listBox1.SelectedIndex = listBox1.Items.Count - 1;
                 listBox1.SelectedIndex = -1;
@@ -291,6 +338,7 @@ namespace ProtoSRV
 
         private void button5_Click(object sender, EventArgs e)
         {
+            this.Invalidate();
             this.Refresh();
         }
 
