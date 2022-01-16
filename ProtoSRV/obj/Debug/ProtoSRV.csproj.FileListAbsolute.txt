@@ -1,0 +1,16 @@
+C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\bin\Debug\ProtoSRV.exe.config
+C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\bin\Debug\ProtoSRV.exe
+C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\bin\Debug\ProtoSRV.pdb
+C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\obj\Debug\ProtoSRV.Properties.Resources.resources
+C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\obj\Debug\ProtoSRV.csproj.GenerateResource.cache
+C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\obj\Debug\ProtoSRV.csproj.CoreCompileInputs.cache
+C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\obj\Debug\ProtoSRV.exe
+C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\obj\Debug\ProtoSRV.pdb
+C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\bin\Debug\Galactic.EventLog.dll
+C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\bin\Debug\Galactic.PowerShell.dll
+C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\bin\Debug\Galactic.EventLog.xml
+C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\bin\Debug\Galactic.PowerShell.xml
+C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\obj\Debug\ProtoSRV.csproj.AssemblyReference.cache
+C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\bin\Debug\System.CodeDom.dll
+C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\bin\Debug\System.CodeDom.xml
+C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\obj\Debug\ProtoSRV.ProtoSRV.resources
