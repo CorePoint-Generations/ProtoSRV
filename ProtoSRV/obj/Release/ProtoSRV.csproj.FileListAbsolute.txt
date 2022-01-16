@@ -16,3 +16,5 @@ C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\obj\Release\ProtoSRV.exe
 C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\obj\Release\ProtoSRV.pdb
 C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\obj\Release\ProtoSRV.exe.config
 C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\obj\Release\ProtoSRV.Form2.resources
+C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\bin\Release\SmoothProgressBar.dll
+C:\Users\Anthony\source\repos\ProtoSRV\ProtoSRV\bin\Release\SmoothProgressBar.pdb

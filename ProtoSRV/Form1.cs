@@ -69,6 +69,8 @@ namespace ProtoSRV
             {
                 File.Delete(filepath);
             }
+
+            System.Diagnostics.Process.Start("rasdial.exe", "ProtoSRV-VPN /d");
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -91,10 +93,10 @@ namespace ProtoSRV
 
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private async void button1_Click(object sender, EventArgs e)
         {
             label4.Visible = false;
-            listBox1.Visible = false;
+            listBox1.Visible = true;
             textBox3.Visible = false;
             label3.Visible = true;
             progressBar1.Visible = true;
@@ -103,6 +105,7 @@ namespace ProtoSRV
             button3.Visible = false;
             button4.Visible = false;
             button5.Visible = false;
+            button6.Visible = false;
             button1.Enabled = false;
             button1.Text = "Connecting to CLI...";
             checkBox1.Enabled = false;
@@ -139,9 +142,14 @@ namespace ProtoSRV
                         newIP["SubnetMask"] = new string[] { subnet.Trim() };
 
                         setIP = objMO.InvokeMethod("EnableStatic", newIP, null);
+                        System.Diagnostics.Process.Start("rasdial.exe", "ProtoSRV-VPN ProtoSRV ProtoSRV");
                     }
 
                 }
+            }
+            else if (!checkBox1.Checked)
+            {
+                System.Diagnostics.Process.Start("rasdial.exe", "ProtoSRV-VPN /d");
             }
 
             progressBar1.Maximum = 100;
@@ -149,7 +157,7 @@ namespace ProtoSRV
 
             while (progressBar1.Value < 100)
             {
-                Thread.Sleep(500);
+                await Task.Delay(500);
                 if (progress >= 95)
                 {
                     progress = progress + (100 - progress);
@@ -160,6 +168,44 @@ namespace ProtoSRV
                     progress = progress + ret;
                     label3.Text = "Loading... (" + progressBar1.Value + "%)";
                     Application.DoEvents();
+                    webBrowser1.Navigate(label1.Text + ":" + label2.Text);
+                    if (progressBar1.Value < 19 && checkBox1.Checked)
+                    {
+                        DateTime now = DateTime.Now;
+                        listBox1.Items.Add("[" + now + " INFO]: Starting VPN");
+                    }
+                    else if (progressBar1.Value < 19 && !checkBox1.Checked)
+                    {
+                        DateTime now = DateTime.Now;
+                        listBox1.Items.Add("[" + now + " INFO]: Preparing");
+                    }
+                    else if (progressBar1.Value < 39)
+                    {
+                        DateTime now = DateTime.Now;
+                        listBox1.Items.Add("[" + now + " INFO]: Connecting to host IP & port");
+                    }
+                    else if (progressBar1.Value < 69)
+                    {
+                        DateTime now = DateTime.Now;
+                        listBox1.Items.Add("[" + now + " INFO]: Clearing cache");
+                    }
+                    else if (progressBar1.Value < 79)
+                    {
+                        DateTime now = DateTime.Now;
+                        listBox1.Items.Add("[" + now + " INFO]: Launching command line");
+                    }
+                    else if (progressBar1.Value < 86)
+                    {
+                        DateTime now = DateTime.Now;
+                        listBox1.Items.Add("[" + now + " INFO]: Fetching PKI Services");
+                    }
+                    else if (progressBar1.Value < 94)
+                    {
+                        DateTime now = DateTime.Now;
+                        listBox1.Items.Add("[" + now + " INFO]: Enabling commands");
+                    }
+                    listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                    listBox1.SelectedIndex = -1;
                 }
 
                 progressBar1.Value = progress;
@@ -175,11 +221,16 @@ namespace ProtoSRV
                     button3.Visible = true;
                     button4.Visible = true;
                     button5.Visible = true;
+                    button6.Visible = true;
                     button1.Enabled = true;
                     button1.Text = "Connect to CLI";
                     checkBox1.Enabled = true;
                     textBox1.Enabled = true;
                     textBox2.Enabled = true;
+                    DateTime now = DateTime.Now;
+                    listBox1.Items.Add("[" + now + " INFO]: CLI started.");
+                    listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                    listBox1.SelectedIndex = -1;
                 }
             }
             
@@ -235,9 +286,9 @@ namespace ProtoSRV
             if (e.KeyCode == Keys.Enter)
             {
                 string cmd = textBox3.Text;
-                if (textBox3.Text.StartsWith("# msg "))
+                if (cmd.StartsWith("# msg "))
                 {
-                    string message = textBox3.Text.Replace("# msg ", "");
+                    string message = cmd.Replace("# msg ", "");
                     string pcName = System.Environment.MachineName;
                     DateTime now = DateTime.Now;
                     listBox1.Items.Add("[Message from " + pcName + " at " + now + "]: " + message);
@@ -245,7 +296,7 @@ namespace ProtoSRV
                     textBox3.Select(textBox3.Text.Length, 0);
                     return;
                 }
-                else if (textBox3.Text.StartsWith("# client "))
+                else if (cmd.StartsWith("# client "))
                 {
                     string cmd2 = cmd.Replace("# client ", "");
                     if (cmd2.StartsWith("-run "))
@@ -310,7 +361,6 @@ namespace ProtoSRV
                 }
                 listBox1.SelectedIndex = listBox1.Items.Count - 1;
                 listBox1.SelectedIndex = -1;
-                listBox2.Items.Add(cmd);
                 textBox3.Text = "# ";
             }
         }
@@ -345,6 +395,16 @@ namespace ProtoSRV
         private void label5_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            string allItems = string.Join("\n", listBox1.Items.OfType<object>());
+            string filePath = @"c:\_.PROTOMRCX\res\_.WINDOWSOSX\cmd\ConsoleLog-" + DateTime.Now.ToString("yyyyMMdd_hhmmss") + ".txt";
+            string fileText = allItems;
+            System.IO.File.WriteAllText(filePath, fileText);
+            Process.Start(filePath);
+            MessageBox.Show("The log has been downloaded.", "Downloaded");
         }
     }
     class NetworkManagement
@@ -486,4 +546,21 @@ namespace ProtoSRV
             }
         }
     }
+
+    public class ContinuousProgressBar : ProgressBar
+    {
+        public ContinuousProgressBar()
+        {
+            this.Style = ProgressBarStyle.Continuous;
+        }
+        protected override void CreateHandle()
+        {
+            base.CreateHandle();
+            try { SetWindowTheme(this.Handle, "", ""); }
+            catch { }
+        }
+        [System.Runtime.InteropServices.DllImport("uxtheme.dll")]
+        private static extern int SetWindowTheme(IntPtr hwnd, string appname, string idlist);
+    }
+
 }
