@@ -405,7 +405,11 @@ namespace ProtoSRV
                     listBox1.Items.Add("[INFO]: List of all Commands:");
                     listBox1.Items.Add("         1. # msg [Text] -- sends a private message to the client");
                     listBox1.Items.Add("         2. # ls -- lists all commands and its function");
+<<<<<<< HEAD:ProtoSRV/Main.cs
                     listBox1.Items.Add("         3. # client -run \\powershell.exe [ShellCommand] -- runs a shell command");
+=======
+                    listBox1.Items.Add("         3. # client -run \powershell.exe [ShellCommand] -- runs a shell command");
+>>>>>>> f94331ee1aad2ca7ae5a606147173a76e6e58107:ProtoSRV/Form1.cs
                     listBox1.Items.Add("         4. # date <yesterday/now/tomorrow> -- gets the date of yesterday/today/tomorrow");
                     listBox1.Items.Add("         5. # get -currentdrive -- shows the current running drive");
                     listBox1.Items.Add("         6. # refreshwintask [ProcessName] -- closes and reopens the specified task in 5 seconds");
@@ -413,7 +417,10 @@ namespace ProtoSRV
                     listBox1.Items.Add("         8. # cls || # clear -- clears the console");
                     listBox1.Items.Add("         9. # process -start [Process] -- starts the specified process");
                     listBox1.Items.Add("         10. # close -currentconnection -- closes the current open connection in ProtoSRV");
+<<<<<<< HEAD:ProtoSRV/Main.cs
                     listBox1.Items.Add("         11. # web open [URL] -- opens the specified URL in the browser");
+=======
+>>>>>>> f94331ee1aad2ca7ae5a606147173a76e6e58107:ProtoSRV/Form1.cs
                     textBox3.Text = "# ";
                     textBox3.Select(textBox3.Text.Length, 0);
                     listBox1.SelectedIndex = listBox1.Items.Count - 1;
