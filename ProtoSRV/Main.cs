@@ -17,6 +17,8 @@ using System.Diagnostics;
 using System.Management;
 using System.Threading;
 using System.Management.Automation.Runspaces;
+using System.Xml;
+using System.Net.Sockets;
 
 namespace ProtoSRV
 {
@@ -29,12 +31,34 @@ namespace ProtoSRV
         {
             InitializeComponent();
             this.WindowState = FormWindowState.Normal;
+            var dir = new DirectoryInfo("c:\\_.PROTOMRCX\\res\\_.WINDOWSOSX\\cmd");
+            foreach (var file in Directory.GetFiles(dir.ToString()))
+            {
+                File.Delete(file);
+            }
         }
 
         private int RandomNumber(int min, int max)
         {
             Random random = new Random();
             return random.Next(min, max);
+        }
+
+        protected bool CheckUrlStatus(string Website)
+        {
+            try
+            {
+                var request = WebRequest.Create(Website) as HttpWebRequest;
+                request.Method = "HEAD";
+                using (var response = (HttpWebResponse)request.GetResponse())
+                {
+                    return response.StatusCode == HttpStatusCode.OK;
+                }
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -63,7 +87,7 @@ namespace ProtoSRV
         }
 
         private void ProtoSRV_FormClosing(object sender, FormClosingEventArgs e)
-        { 
+        {
             string filepath = @"c:\_.PROTOMRCX\res\_.WINDOWSOSX\cmd_tmp.rki";
 
             if (File.Exists(filepath))
@@ -72,6 +96,12 @@ namespace ProtoSRV
             }
 
             System.Diagnostics.Process.Start("rasdial.exe", "ProtoSRV-VPN /d");
+
+            var dir = new DirectoryInfo("c:\\_.PROTOMRCX\\res\\_.WINDOWSOSX\\cmd");
+            foreach (var file in Directory.GetFiles(dir.ToString()))
+            {
+                File.Delete(file);
+            }
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -92,6 +122,17 @@ namespace ProtoSRV
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        public void RetrievePKI(object key)
+        {
+            string webGET = "http://svc.corepoint.tk/public/pki";
+            string webFILES = "webGET[/pki.npi, /config.npi]";
+            string keyHash = key.GetHashCode().ToString();
+            Console.WriteLine("HashCode = " + keyHash + ", webGET = " + webGET + ", webFILES = " + webFILES);
+            System.Net.WebClient wc = new System.Net.WebClient();
+            string webData1 = wc.DownloadString("http://svc.corepoint.tk/public/pki/pki.npi");
+            string webData2 = wc.DownloadString("http://svc.corepoint.tk/public/pki/config.npi");
         }
 
         private async void button1_Click(object sender, EventArgs e)
@@ -115,8 +156,8 @@ namespace ProtoSRV
 
             if (checkBox1.Checked)
             {
-                //setIP1("10.10.28.30", "255.255.255.0", "10.10.28.1");
-                //  return;
+                // setIP1("10.10.28.30", "255.255.255.0", "10.10.28.1");
+                // return;
 
                 ManagementClass objMC = new ManagementClass("Win32_NetworkAdapterConfiguration");
                 ManagementObjectCollection objMOC = objMC.GetInstances();
@@ -125,7 +166,7 @@ namespace ProtoSRV
                 foreach (ManagementObject objMO in objMOC)
                 {
 
-                    //  Response.Write("</tr>");
+                    // Response.Write("</tr>");
                     // txtObjvalue.Text = objMO["IPEnabled"].ToString();
                     // Response.Write(objMO["IPEnabled"].ToString() + "<br />");
                     x++;
@@ -155,12 +196,15 @@ namespace ProtoSRV
 
             progressBar1.Maximum = 100;
             int progress = 0;
+            int cntdwn = 20;
 
             while (progressBar1.Value < 100)
             {
                 await Task.Delay(500);
                 if (progress >= 95)
                 {
+                    progress = 95;
+                    await Task.Delay(9000);
                     progress = progress + (100 - progress);
                 }
                 else
@@ -169,41 +213,98 @@ namespace ProtoSRV
                     progress = progress + ret;
                     label3.Text = "Loading... (" + progressBar1.Value + "%)";
                     Application.DoEvents();
-                    webBrowser1.Navigate(label1.Text + ":" + label2.Text);
                     if (progressBar1.Value < 19 && checkBox1.Checked)
                     {
                         DateTime now = DateTime.Now;
                         listBox1.Items.Add("[" + now + " INFO]: Starting VPN");
+                        System.Diagnostics.Process.Start("rasdial.exe", "ProtoSRV-VPN ProtoSRV ProtoSRV");
                     }
                     else if (progressBar1.Value < 19 && !checkBox1.Checked)
                     {
                         DateTime now = DateTime.Now;
                         listBox1.Items.Add("[" + now + " INFO]: Preparing");
+                        var preparing = 1;
                     }
                     else if (progressBar1.Value < 39)
                     {
                         DateTime now = DateTime.Now;
-                        listBox1.Items.Add("[" + now + " INFO]: Connecting to host IP & port");
+                        var ping = RunScript("ping " + textBox1.Text + ":" + textBox2.Text);
+                        Console.WriteLine(ping);
+                        var pingTest = RandomNumber(RandomNumber(20, 30), 40);
+                        listBox1.Items.Add("[" + now + " INFO]: Connecting to host & port (Ping: " + pingTest + ")");
+                        if (textBox2.Text != "")
+                        {
+                            webBrowser1.Navigate(textBox1.Text + ":" + textBox2.Text);
+                            bool status = CheckUrlStatus(textBox1.Text + ":" + textBox2.Text);
+                            if (status == true)
+                            {
+                                var ipStatus = 1;
+                            }
+                            else
+                            {
+                                var ipStatus = 0;
+                                var errorCode = 1308;
+                            }
+                        }
+                        else if (textBox2.Text == "")
+                        {
+                            webBrowser1.Navigate(textBox1.Text);
+                            bool status = CheckUrlStatus(textBox1.Text);
+                            if (status == true)
+                            {
+                                var ipStatus = 1;
+                            }
+                            else
+                            {
+                                var ipStatus = 0;
+                                var errorCode = 1308;
+                                Application.Restart();
+                            }
+                        }
                     }
                     else if (progressBar1.Value < 69)
                     {
                         DateTime now = DateTime.Now;
                         listBox1.Items.Add("[" + now + " INFO]: Clearing cache");
+                        var dir = new DirectoryInfo(System.IO.Path.GetTempPath());
+                        foreach (var file in Directory.GetFiles(dir.ToString()))
+                        {
+                            try
+                            {
+                                File.Delete(file);
+                            }
+                            catch (Exception exc)
+                            {
+                                Console.WriteLine(exc.ToString());
+                            }
+                        }
                     }
                     else if (progressBar1.Value < 79)
                     {
                         DateTime now = DateTime.Now;
                         listBox1.Items.Add("[" + now + " INFO]: Launching command line");
+                        while (cntdwn != 0)
+                        {
+                            string path = @"c:\_.PROTOMRCX\res\_.WINDOWSOSX\cmd\res_";
+                            string tmp = Guid.NewGuid().ToString();
+                            string fPath = path + tmp + ".rki";
+                            string content = "new:\n    guid: " + tmp;
+                            System.IO.File.WriteAllText(fPath, content);
+                            Console.WriteLine("Created file");
+                            cntdwn--;
+                        }
                     }
                     else if (progressBar1.Value < 86)
                     {
                         DateTime now = DateTime.Now;
                         listBox1.Items.Add("[" + now + " INFO]: Fetching PKI Services");
+                        object PKIget = new Object();
+                        RetrievePKI(PKIget);
                     }
                     else if (progressBar1.Value < 94)
                     {
                         DateTime now = DateTime.Now;
-                        listBox1.Items.Add("[" + now + " INFO]: Enabling commands");
+                        listBox1.Items.Add("[" + now + " INFO]: Enabling PKI Services");
                     }
                     listBox1.SelectedIndex = listBox1.Items.Count - 1;
                     listBox1.SelectedIndex = -1;
@@ -234,7 +335,7 @@ namespace ProtoSRV
                     listBox1.SelectedIndex = -1;
                 }
             }
-            
+
 
         }
 
@@ -269,17 +370,17 @@ namespace ProtoSRV
             foreach (PSObject pSObject in results)
                 strB.AppendLine(pSObject.ToString());
             return strB.ToString();
-            
+
         }
 
         private void listBox1_KeyPress(object sender, KeyPressEventArgs e)
         {
-            
+
         }
 
         private void listBox1_KeyUp(object sender, KeyEventArgs e)
         {
-            
+
         }
 
         private async void textBox3_KeyDown(object sender, KeyEventArgs e)
@@ -299,6 +400,25 @@ namespace ProtoSRV
                     listBox1.SelectedIndex = -1;
                     return;
                 }
+                else if (cmd == "# ls")
+                {
+                    listBox1.Items.Add("[INFO]: List of all Commands:");
+                    listBox1.Items.Add("         1. # msg [Text] -- sends a private message to the client");
+                    listBox1.Items.Add("         2. # ls -- lists all commands and its function");
+                    listBox1.Items.Add("         3. # client -run \\powershell.exe [ShellCommand] -- runs a shell command");
+                    listBox1.Items.Add("         4. # date <yesterday/now/tomorrow> -- gets the date of yesterday/today/tomorrow");
+                    listBox1.Items.Add("         5. # get -currentdrive -- shows the current running drive");
+                    listBox1.Items.Add("         6. # refreshwintask [ProcessName] -- closes and reopens the specified task in 5 seconds");
+                    listBox1.Items.Add("         7. # exit -- closes ProtoSRV");
+                    listBox1.Items.Add("         8. # cls || # clear -- clears the console");
+                    listBox1.Items.Add("         9. # process -start [Process] -- starts the specified process");
+                    listBox1.Items.Add("         10. # close -currentconnection -- closes the current open connection in ProtoSRV");
+                    listBox1.Items.Add("         11. # web open [URL] -- opens the specified URL in the browser");
+                    textBox3.Text = "# ";
+                    textBox3.Select(textBox3.Text.Length, 0);
+                    listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                    listBox1.SelectedIndex = -1;
+                }
                 else if (cmd.StartsWith("# client "))
                 {
                     string cmd2 = cmd.Replace("# client ", "");
@@ -311,7 +431,7 @@ namespace ProtoSRV
                             string Output = RunScript(cmd4);
                             DateTime now = DateTime.Now;
                             listBox1.Items.Add("[" + now + " INFO]: Executed \"" + cmd4 + "\" in powershell.exe");
-                            Form2 output = new Form2(Output);
+                            OutputDialog output = new OutputDialog(Output);
                             output.ShowDialog();
                             textBox3.Text = "# ";
                             textBox3.Select(textBox3.Text.Length, 0);
@@ -331,6 +451,8 @@ namespace ProtoSRV
                     {
                         DateTime now = DateTime.Now;
                         listBox1.Items.Add("[INFO]: The current date and time is " + now + ".");
+                        textBox3.Text = "# ";
+                        textBox3.Select(textBox3.Text.Length, 0);
                         listBox1.SelectedIndex = listBox1.Items.Count - 1;
                         listBox1.SelectedIndex = -1;
                     }
@@ -339,6 +461,8 @@ namespace ProtoSRV
                         var today = DateTime.Today;
                         var tomorrow = today.AddDays(1);
                         listBox1.Items.Add("[INFO]: Tomorrow is " + tomorrow + ".");
+                        textBox3.Text = "# ";
+                        textBox3.Select(textBox3.Text.Length, 0);
                         listBox1.SelectedIndex = listBox1.Items.Count - 1;
                         listBox1.SelectedIndex = -1;
                     }
@@ -347,6 +471,8 @@ namespace ProtoSRV
                         var today = DateTime.Today;
                         var yesterday = today.AddDays(-1);
                         listBox1.Items.Add("[INFO]: Yesterday was " + yesterday + ".");
+                        textBox3.Text = "# ";
+                        textBox3.Select(textBox3.Text.Length, 0);
                         listBox1.SelectedIndex = listBox1.Items.Count - 1;
                         listBox1.SelectedIndex = -1;
                     }
@@ -365,29 +491,35 @@ namespace ProtoSRV
                         RunScript("taskkill /f /im " + cmd2);
                         await Task.Delay(5000);
                         RunScript(cmd2);
+                        textBox3.Text = "# ";
+                        textBox3.Select(textBox3.Text.Length, 0);
                         listBox1.SelectedIndex = listBox1.Items.Count - 1;
                         listBox1.SelectedIndex = -1;
-                        textBox3.Text = "";
                         return;
                     }
                     catch (Exception exc)
                     {
                         MessageBox.Show(exc.ToString(), "Command Execution Error");
+                        textBox3.Text = "# ";
+                        textBox3.Select(textBox3.Text.Length, 0);
                         listBox1.SelectedIndex = listBox1.Items.Count - 1;
                         listBox1.SelectedIndex = -1;
-                        textBox3.Text = "";
                         return;
                     }
                 }
                 else if (cmd == "# exit")
                 {
                     RunScript("taskkill /f /im ProtoSRV.exe");
+                    textBox3.Text = "# ";
+                    textBox3.Select(textBox3.Text.Length, 0);
                     listBox1.SelectedIndex = listBox1.Items.Count - 1;
                     listBox1.SelectedIndex = -1;
                 }
                 else if (cmd == "# cls" || cmd == "# clear")
                 {
                     listBox1.Items.Clear();
+                    textBox3.Text = "# ";
+                    textBox3.Select(textBox3.Text.Length, 0);
                     listBox1.SelectedIndex = listBox1.Items.Count - 1;
                     listBox1.SelectedIndex = -1;
                 }
@@ -401,14 +533,15 @@ namespace ProtoSRV
                         {
                             Process.Start(cmd3);
                         }
-                        catch(Exception exc)
+                        catch (Exception exc)
                         {
                             MessageBox.Show(exc.ToString(), "Error Starting Process");
                         }
                         return;
                     }
 
-                    textBox3.Text = "";
+                    textBox3.Text = "# ";
+                    textBox3.Select(textBox3.Text.Length, 0);
                     listBox1.SelectedIndex = listBox1.Items.Count - 1;
                     listBox1.SelectedIndex = -1;
                     return;
@@ -418,6 +551,8 @@ namespace ProtoSRV
                     DateTime now = DateTime.Now;
                     listBox1.Items.Add("[" + now + " ERROR]: " + "Command: \"# \"");
                     listBox1.Items.Add("                                                                        ^^^^ command cannot be executed as empty text");
+                    textBox3.Text = "# ";
+                    textBox3.Select(textBox3.Text.Length, 0);
                     listBox1.SelectedIndex = listBox1.Items.Count - 1;
                     listBox1.SelectedIndex = -1;
                     return;
@@ -425,19 +560,41 @@ namespace ProtoSRV
                 else if (cmd == "# close -currentconnection")
                 {
                     Application.Restart();
+                    return;
+                }
+                else if (cmd.StartsWith("# web "))
+                {
+                    string cmd2 = cmd.Replace("# web ", "");
+                    if (cmd2.StartsWith("open "))
+                    {
+                        string cmd3 = cmd2.Replace("open ", "");
+                        Process.Start(cmd3);
+                        textBox3.Text = "# ";
+                        textBox3.Select(textBox3.Text.Length, 0);
+                        listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                        listBox1.SelectedIndex = -1;
+                        return;
+                    }
+                    textBox3.Text = "# ";
+                    textBox3.Select(textBox3.Text.Length, 0);
+                    listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                    listBox1.SelectedIndex = -1;
+                    return;
                 }
                 else
                 {
                     DateTime now = DateTime.Now;
                     listBox1.Items.Add("[" + now + " ERROR]: " + "Command: \"" + cmd + "\" cannot be executed: command does not exist");
                     textBox3.Text = "# ";
+                    textBox3.Select(textBox3.Text.Length, 0);
                     listBox1.SelectedIndex = listBox1.Items.Count - 1;
                     listBox1.SelectedIndex = -1;
                     return;
                 }
+                textBox3.Text = "# ";
+                textBox3.Select(textBox3.Text.Length, 0);
                 listBox1.SelectedIndex = listBox1.Items.Count - 1;
                 listBox1.SelectedIndex = -1;
-                textBox3.Text = "# ";
             }
         }
 

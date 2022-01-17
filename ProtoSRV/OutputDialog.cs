@@ -11,9 +11,9 @@ using System.Windows.Forms;
 
 namespace ProtoSRV
 {
-    public partial class Form2 : Form
+    public partial class OutputDialog : Form
     {
-        public Form2(string cmdOutput)
+        public OutputDialog(string cmdOutput)
         {
             InitializeComponent();
             textBox3.Text = cmdOutput;
@@ -41,6 +41,11 @@ namespace ProtoSRV
 
         private void Form2_Load(object sender, EventArgs e)
         {
+        }
+
+        private void label4_Click_1(object sender, EventArgs e)
+        {
+
         }
     }
 }
