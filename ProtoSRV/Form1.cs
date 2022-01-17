@@ -28,6 +28,7 @@ namespace ProtoSRV
         public ProtoSRV()
         {
             InitializeComponent();
+            this.WindowState = FormWindowState.Normal;
         }
 
         private int RandomNumber(int min, int max)
@@ -281,7 +282,7 @@ namespace ProtoSRV
             
         }
 
-        private void textBox3_KeyDown(object sender, KeyEventArgs e)
+        private async void textBox3_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
@@ -322,6 +323,61 @@ namespace ProtoSRV
                     listBox1.SelectedIndex = listBox1.Items.Count - 1;
                     listBox1.SelectedIndex = -1;
                     return;
+                }
+                else if (cmd.StartsWith("# date"))
+                {
+                    string cmd2 = cmd.Replace("# date ", "");
+                    if (cmd2 == "now")
+                    {
+                        DateTime now = DateTime.Now;
+                        listBox1.Items.Add("[INFO]: The current date and time is " + now + ".");
+                        listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                        listBox1.SelectedIndex = -1;
+                    }
+                    if (cmd2 == "tomorrow")
+                    {
+                        var today = DateTime.Today;
+                        var tomorrow = today.AddDays(1);
+                        listBox1.Items.Add("[INFO]: Tomorrow is " + tomorrow + ".");
+                        listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                        listBox1.SelectedIndex = -1;
+                    }
+                    if (cmd2 == "yesterday")
+                    {
+                        var today = DateTime.Today;
+                        var yesterday = today.AddDays(-1);
+                        listBox1.Items.Add("[INFO]: Yesterday was " + yesterday + ".");
+                        listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                        listBox1.SelectedIndex = -1;
+                    }
+                }
+                else if (cmd == "# get -currentdrive")
+                {
+                    string sysDrive = Path.GetPathRoot(Environment.SystemDirectory);
+                    DateTime now = DateTime.Now;
+                    listBox1.Items.Add("[" + now + $" INFO]: Windows is currently running on {sysDrive}");
+                }
+                else if (cmd.StartsWith("# refreshwintask "))
+                {
+                    string cmd2 = cmd.Replace("# refreshwintask ", "");
+                    try
+                    {
+                        RunScript("taskkill /f /im " + cmd2);
+                        await Task.Delay(5000);
+                        RunScript(cmd2);
+                        listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                        listBox1.SelectedIndex = -1;
+                        textBox3.Text = "";
+                        return;
+                    }
+                    catch (Exception exc)
+                    {
+                        MessageBox.Show(exc.ToString(), "Command Execution Error");
+                        listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                        listBox1.SelectedIndex = -1;
+                        textBox3.Text = "";
+                        return;
+                    }
                 }
                 else if (cmd == "# exit")
                 {
@@ -365,6 +421,10 @@ namespace ProtoSRV
                     listBox1.SelectedIndex = listBox1.Items.Count - 1;
                     listBox1.SelectedIndex = -1;
                     return;
+                }
+                else if (cmd == "# close -currentconnection")
+                {
+                    Application.Restart();
                 }
                 else
                 {
