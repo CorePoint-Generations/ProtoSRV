@@ -299,6 +299,24 @@ namespace ProtoSRV
                     listBox1.SelectedIndex = -1;
                     return;
                 }
+                else if (cmd == "# ls")
+                {
+                    listBox1.Items.Add("[INFO]: List of all Commands:");
+                    listBox1.Items.Add("         1. # msg [Text] -- sends a private message to the client");
+                    listBox1.Items.Add("         2. # ls -- lists all commands and its function");
+                    listBox1.Items.Add("         3. # client -run \powershell.exe [ShellCommand] -- runs a shell command");
+                    listBox1.Items.Add("         4. # date <yesterday/now/tomorrow> -- gets the date of yesterday/today/tomorrow");
+                    listBox1.Items.Add("         5. # get -currentdrive -- shows the current running drive");
+                    listBox1.Items.Add("         6. # refreshwintask [ProcessName] -- closes and reopens the specified task in 5 seconds");
+                    listBox1.Items.Add("         7. # exit -- closes ProtoSRV");
+                    listBox1.Items.Add("         8. # cls || # clear -- clears the console");
+                    listBox1.Items.Add("         9. # process -start [Process] -- starts the specified process");
+                    listBox1.Items.Add("         10. # close -currentconnection -- closes the current open connection in ProtoSRV");
+                    textBox3.Text = "# ";
+                    textBox3.Select(textBox3.Text.Length, 0);
+                    listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                    listBox1.SelectedIndex = -1;
+                }
                 else if (cmd.StartsWith("# client "))
                 {
                     string cmd2 = cmd.Replace("# client ", "");
