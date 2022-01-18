@@ -244,7 +244,7 @@
   
   ## Questions?
   
-  For any questions, please contact me with the information below:
+  For any questions, please contact me here:
  
-  Forum: [Contribute to ProtoSRV](https://ctpsrv.createaforum.com/general-discussion/)
+  Forum: [ProtoSRV](https://ctpsrv.createaforum.com/index.php)
   
