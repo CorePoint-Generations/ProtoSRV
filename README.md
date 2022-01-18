@@ -1,9 +1,8 @@
 # ProtoSRV
 
-<img src="https://raw.githubusercontent.com/CorePoint-Generations/ProtoSRV/main/ProtoSRV-PREVIEW.png">
-
   ![Badge for GitHub repo top language](https://img.shields.io/github/languages/top/CorePoint-Generations/ProtoSRV?style=flat&logo=appveyor) ![Badge for GitHub last commit](https://img.shields.io/github/last-commit/CorePoint-Generations/ProtoSRV?style=flat&logo=appveyor)
   
+  <img src="https://raw.githubusercontent.com/CorePoint-Generations/ProtoSRV/main/ProtoSRV-PREVIEW.png">
   
   ## Description 
   
