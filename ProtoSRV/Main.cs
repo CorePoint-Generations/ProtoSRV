@@ -19,6 +19,7 @@ using System.Threading;
 using System.Management.Automation.Runspaces;
 using System.Xml;
 using System.Net.Sockets;
+using System.Net.NetworkInformation;
 
 namespace ProtoSRV
 {
@@ -228,10 +229,7 @@ namespace ProtoSRV
                     else if (progressBar1.Value < 39)
                     {
                         DateTime now = DateTime.Now;
-                        var ping = RunScript("ping " + textBox1.Text + ":" + textBox2.Text);
-                        Console.WriteLine(ping);
-                        var pingTest = RandomNumber(RandomNumber(20, 30), 40);
-                        listBox1.Items.Add("[" + now + " INFO]: Connecting to host & port (Ping: " + pingTest + ")");
+                        listBox1.Items.Add("[" + now + " INFO]: Connecting to host & port");
                         if (textBox2.Text != "")
                         {
                             webBrowser1.Navigate(textBox1.Text + ":" + textBox2.Text);
@@ -258,7 +256,6 @@ namespace ProtoSRV
                             {
                                 var ipStatus = 0;
                                 var errorCode = 1308;
-                                Application.Restart();
                             }
                         }
                     }
@@ -400,16 +397,12 @@ namespace ProtoSRV
                     listBox1.SelectedIndex = -1;
                     return;
                 }
-                else if (cmd == "# ls")
+                else if (cmd == "# ls cmd")
                 {
                     listBox1.Items.Add("[INFO]: List of all Commands:");
                     listBox1.Items.Add("         1. # msg [Text] -- sends a private message to the client");
-                    listBox1.Items.Add("         2. # ls -- lists all commands and its function");
-<<<<<<< HEAD:ProtoSRV/Main.cs
+                    listBox1.Items.Add("         2. # ls cmd -- lists all commands and its function");
                     listBox1.Items.Add("         3. # client -run \\powershell.exe [ShellCommand] -- runs a shell command");
-=======
-                    listBox1.Items.Add("         3. # client -run \powershell.exe [ShellCommand] -- runs a shell command");
->>>>>>> f94331ee1aad2ca7ae5a606147173a76e6e58107:ProtoSRV/Form1.cs
                     listBox1.Items.Add("         4. # date <yesterday/now/tomorrow> -- gets the date of yesterday/today/tomorrow");
                     listBox1.Items.Add("         5. # get -currentdrive -- shows the current running drive");
                     listBox1.Items.Add("         6. # refreshwintask [ProcessName] -- closes and reopens the specified task in 5 seconds");
@@ -417,10 +410,17 @@ namespace ProtoSRV
                     listBox1.Items.Add("         8. # cls || # clear -- clears the console");
                     listBox1.Items.Add("         9. # process -start [Process] -- starts the specified process");
                     listBox1.Items.Add("         10. # close -currentconnection -- closes the current open connection in ProtoSRV");
-<<<<<<< HEAD:ProtoSRV/Main.cs
-                    listBox1.Items.Add("         11. # web open [URL] -- opens the specified URL in the browser");
-=======
->>>>>>> f94331ee1aad2ca7ae5a606147173a76e6e58107:ProtoSRV/Form1.cs
+                    listBox1.Items.Add("         11. # web open [URL] -- opens the specified URL");
+                    listBox1.Items.Add("         12. # kill [Process] -- terminates the specified process");
+                    listBox1.Items.Add("         13. # ls processes -- lists the processes running on the system");
+                    listBox1.Items.Add("         14. # ls drives -- lists the drives on the machine");
+                    listBox1.Items.Add("         15. # ls drives fs -- lists the drives with a file system on the machine");
+                    listBox1.Items.Add("         16. # ls childitems -- lists the child items in the whole drive");
+                    listBox1.Items.Add("         17. # ls childitems [DirectoryPath] -- lists the child items in a directory");
+                    listBox1.Items.Add("         18. # file -content [FilePath] -- shows the content of the specified file");
+                    listBox1.Items.Add("         19. # ls services -- lists the services running on the system");
+                    listBox1.Items.Add("         20. # // [Text] -- creates a comment");
+                    listBox1.Items.Add("         21. # -! [Command] -- runs a useless command that ignores all errors that may be shown when executing a command without the -! symbols");
                     textBox3.Text = "# ";
                     textBox3.Select(textBox3.Text.Length, 0);
                     listBox1.SelectedIndex = listBox1.Items.Count - 1;
@@ -582,6 +582,111 @@ namespace ProtoSRV
                         listBox1.SelectedIndex = -1;
                         return;
                     }
+                    textBox3.Text = "# ";
+                    textBox3.Select(textBox3.Text.Length, 0);
+                    listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                    listBox1.SelectedIndex = -1;
+                    return;
+                }
+                else if (cmd.StartsWith("# kill "))
+                {
+                    string cmd2 = cmd.Replace("# kill ", "");
+                    OutputDialog f2 = new OutputDialog(RunScript("taskkill /f /im " + cmd2 + " /t"));
+                    f2.ShowDialog();
+                    textBox3.Text = "# ";
+                    textBox3.Select(textBox3.Text.Length, 0);
+                    listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                    listBox1.SelectedIndex = -1;
+                    return;
+                }
+                else if (cmd == "# ls processes")
+                {
+                    OutputDialog f2 = new OutputDialog(RunScript("Get-Process"));
+                    f2.ShowDialog();
+                    textBox3.Text = "# ";
+                    textBox3.Select(textBox3.Text.Length, 0);
+                    listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                    listBox1.SelectedIndex = -1;
+                    return;
+                }
+                else if (cmd == "# ls drives")
+                {
+                    OutputDialog f2 = new OutputDialog(RunScript("Get-PSDrive"));
+                    f2.ShowDialog();
+                    textBox3.Text = "# ";
+                    textBox3.Select(textBox3.Text.Length, 0);
+                    listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                    listBox1.SelectedIndex = -1;
+                    return;
+                }
+                else if (cmd == "# ls drives fs")
+                {
+                    OutputDialog f2 = new OutputDialog(RunScript("Get-PSDrive -PSProvider FileSystem"));
+                    f2.ShowDialog();
+                    textBox3.Text = "# ";
+                    textBox3.Select(textBox3.Text.Length, 0);
+                    listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                    listBox1.SelectedIndex = -1;
+                    return;
+                }
+                else if (cmd == "# ls childitems")
+                {
+                    OutputDialog f2 = new OutputDialog(RunScript("Get-ChildItem"));
+                    f2.ShowDialog();
+                    textBox3.Text = "# ";
+                    textBox3.Select(textBox3.Text.Length, 0);
+                    listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                    listBox1.SelectedIndex = -1;
+                    return;
+                }
+                else if (cmd.StartsWith("# ls childitems "))
+                {
+                    string cmd2 = cmd.Replace("# ls childitems ", "");
+                    OutputDialog f2 = new OutputDialog(RunScript("Get-ChildItem " + cmd2));
+                    f2.ShowDialog();
+                    textBox3.Text = "# ";
+                    textBox3.Select(textBox3.Text.Length, 0);
+                    listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                    listBox1.SelectedIndex = -1;
+                    return;
+                }
+                else if (cmd.StartsWith("# file -content "))
+                {
+                    string cmd2 = cmd.Replace("# file -content ", "");
+                    OutputDialog f2 = new OutputDialog(RunScript("Get-Content " + cmd2));
+                    f2.ShowDialog();
+                    textBox3.Text = "# ";
+                    textBox3.Select(textBox3.Text.Length, 0);
+                    listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                    listBox1.SelectedIndex = -1;
+                    return;
+                }
+                else if (cmd == "# ls services")
+                {
+                    OutputDialog f2 = new OutputDialog(RunScript("Get-Service"));
+                    f2.ShowDialog();
+                    textBox3.Text = "# ";
+                    textBox3.Select(textBox3.Text.Length, 0);
+                    listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                    listBox1.SelectedIndex = -1;
+                    return;
+                }
+                else if (cmd.StartsWith("# // "))
+                {
+                    string cmd2 = cmd.Replace("# // ", "");
+                    // A comment command
+                    DateTime now = DateTime.Now;
+                    listBox1.Items.Add($"[{now} INFO]: {cmd2}");
+                    textBox3.Text = "# ";
+                    textBox3.Select(textBox3.Text.Length, 0);
+                    listBox1.SelectedIndex = listBox1.Items.Count - 1;
+                    listBox1.SelectedIndex = -1;
+                    return;
+                }
+                else if (cmd.StartsWith("# -!"))
+                {
+                    listBox1.Items.Add($"[-!]: {cmd.Replace("# -! ", "")}");
+                    // Command to ignore all errors that may be shown without the -!
                     textBox3.Text = "# ";
                     textBox3.Select(textBox3.Text.Length, 0);
                     listBox1.SelectedIndex = listBox1.Items.Count - 1;
