@@ -246,5 +246,5 @@
   
   For any questions, please contact me with the information below:
  
-  GitHub: [@CorePoint-Generations](https://api.github.com/users/CorePoint-Generations)
+  Forum: [Contribute to ProtoSRV](https://ctpsrv.createaforum.com/general-discussion/)
   
