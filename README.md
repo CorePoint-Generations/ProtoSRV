@@ -20,24 +20,25 @@
   
   *Steps required to install ProtoSRV:*
   
-  1. Go to the [Releases](/releases) section
+  1. Go to the [Releases](https://github.com/CorePoint-Generations/ProtoSRV/releases) section
   2. Download the latest file
   3. Run the setup
   4. Complete required steps
   5. Open the software
      *You're done!*
   
-  ## Usage 
+  ## Notes 
   
   *Instructions and examples for use:*
   
-  This is the Usage section. Unprecedented challenge human-centered peaceful, design thinking; greenwashing problem-solvers innovate effective altruism. Resilient co-creation resist innovate, paradigm. Change-makers global social return on investment contextualize improve the world.
+  This app is NOT created for the use of "hacking". This project was just created to allow users to run shell or PKI commands through an online console.
+  If you are not connected to a network, the app will only connect to an offline console which means that it will temporarily install ProtoMRC and connect to your client and run a console in it.
   
   ## Contributing
   
   *If you would like to contribute it, you can follow these guidelines for how to do so.*
   
-  Tell us about how other developers can contribute to your project.  Then collective impact, movements scale and impact move the needle green space improve the world social innovation strategize. Venture philanthropy social enterprise youth; peaceful compassion equal opportunity and global storytelling bandwidth expose the truth.
+  Contact me at [@CorePoint-Generations](https://api.github.com/users/CorePoint-Generations)
   
   ## Tests
   
@@ -47,7 +48,7 @@
   
   ## License
   
-  Mozilla Public License 2.0
+  Apache License 2.0
   
   ---
   
