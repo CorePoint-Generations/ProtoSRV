@@ -7,7 +7,7 @@
   
   *Information:* 
   
-  ProtoSRV is a software that allows users to run shell commands through a host that supports ProtoMRC or LuminMRC
+  ProtoSRV is a software that allows users to run shell commands through a host that supports ProtoMRC or LuminMRC. This is still WIP which means that there is still work to be done on this software so you may expect some major or minor bugs that occur.
 
   ## Table of Contents
   * [Installation](#installation)
@@ -18,9 +18,14 @@
   
   ## Installation
   
-  *Steps required to install project and how to get the development environment running:*
+  *Steps required to install ProtoSRV:*
   
-  These are the installation steps. Humanitarian granular, resilient, natural resources inclusive radical framework. Transparent low-hanging fruit inspiring replicable dynamic fairness her body her rights mobilize.
+  1. Go to the [Releases](/releases) section
+  2. Download the latest file
+  3. Run the setup
+  4. Complete required steps
+  5. Open the software
+     *You're done!*
   
   ## Usage 
   
