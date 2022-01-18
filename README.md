@@ -28,7 +28,7 @@
   
   ## Notes 
   
-  *Instructions and examples for use:*
+  *Some extra information and notes:*
   
   This app is NOT created for the use of "hacking". This project was just created to allow users to run shell or PKI commands through an online console.
   If you are not connected to a network, the app will only connect to an offline console which means that it will temporarily install ProtoMRC and connect to your client and run a console in it.
